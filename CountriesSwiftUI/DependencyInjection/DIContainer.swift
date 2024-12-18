@@ -6,8 +6,8 @@
 //  Copyright © 2024 Alexey Naumov. All rights reserved.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct DIContainer {
 
@@ -39,9 +39,10 @@ extension DIContainer {
         let userPermissions: UserPermissionsInteractor
 
         static var stub: Self {
-            .init(images: StubImagesInteractor(),
-                  countries: StubCountriesInteractor(),
-                  userPermissions: StubUserPermissionsInteractor())
+            .init(
+                images: StubImagesInteractor(),
+                countries: StubCountriesInteractor(),
+                userPermissions: StubUserPermissionsInteractor())
         }
     }
 }
@@ -52,7 +53,8 @@ extension EnvironmentValues {
 
 extension View {
     func inject(_ container: DIContainer) -> some View {
-        return self
+        return
+            self
             .environment(\.injected, container)
     }
 }

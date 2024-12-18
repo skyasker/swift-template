@@ -6,8 +6,8 @@
 //  Copyright © 2020 Alexey Naumov. All rights reserved.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 typealias Store<State> = CurrentValueSubject<State, Never>
 
@@ -30,8 +30,8 @@ extension Store {
         self.value = value
     }
 
-    func updates<Value>(for keyPath: KeyPath<Output, Value>) ->
-        AnyPublisher<Value, Failure> where Value: Equatable {
+    func updates<Value>(for keyPath: KeyPath<Output, Value>) -> AnyPublisher<Value, Failure>
+    where Value: Equatable {
         return map(keyPath).removeDuplicates().eraseToAnyPublisher()
     }
 }
@@ -39,8 +39,10 @@ extension Store {
 // MARK: -
 
 extension Binding where Value: Equatable {
-    func dispatched<State>(to state: Store<State>,
-                           _ keyPath: WritableKeyPath<State, Value>) -> Self {
+    func dispatched<State>(
+        to state: Store<State>,
+        _ keyPath: WritableKeyPath<State, Value>
+    ) -> Self {
         return onSet { state[keyPath] = $0 }
     }
 }
@@ -49,14 +51,15 @@ extension Binding where Value: Equatable {
     typealias ValueClosure = (Value) -> Void
 
     func onSet(_ perform: @escaping ValueClosure) -> Self {
-        return .init(get: { () -> Value in
-            self.wrappedValue
-        }, set: { value in
-            if self.wrappedValue != value {
-                self.wrappedValue = value
-            }
-            perform(value)
-        })
+        return .init(
+            get: { () -> Value in
+                self.wrappedValue
+            },
+            set: { value in
+                if self.wrappedValue != value {
+                    self.wrappedValue = value
+                }
+                perform(value)
+            })
     }
 }
-

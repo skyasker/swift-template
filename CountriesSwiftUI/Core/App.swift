@@ -6,12 +6,12 @@
 //  Copyright © 2024 Alexey Naumov. All rights reserved.
 //
 
-import SwiftUI
 import EnvironmentOverrides
+import SwiftUI
 
 @main
 struct MainApp: App {
-    
+
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

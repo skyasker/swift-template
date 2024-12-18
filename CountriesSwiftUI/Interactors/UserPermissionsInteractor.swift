@@ -36,7 +36,7 @@ protocol SystemNotificationsCenter {
     func requestAuthorization(options: UNAuthorizationOptions) async throws -> Bool
 }
 
-extension UNNotificationSettings: SystemNotificationsSettings { }
+extension UNNotificationSettings: SystemNotificationsSettings {}
 extension UNUserNotificationCenter: SystemNotificationsCenter {
     func currentSettings() async -> any SystemNotificationsSettings {
         return await notificationSettings()
@@ -51,9 +51,10 @@ final class RealUserPermissionsInteractor: UserPermissionsInteractor {
     private let openAppSettings: () -> Void
     private let notificationCenter: SystemNotificationsCenter
 
-    init(appState: Store<AppState>,
-         notificationCenter: SystemNotificationsCenter = UNUserNotificationCenter.current(),
-         openAppSettings: @escaping () -> Void
+    init(
+        appState: Store<AppState>,
+        notificationCenter: SystemNotificationsCenter = UNUserNotificationCenter.current(),
+        openAppSettings: @escaping () -> Void
     ) {
         self.appState = appState
         self.notificationCenter = notificationCenter
@@ -102,17 +103,19 @@ extension UNAuthorizationStatus {
     }
 }
 
-private extension RealUserPermissionsInteractor {
+extension RealUserPermissionsInteractor {
 
-    func pushNotificationsPermissionStatus() async -> Permission.Status {
-        return await notificationCenter
+    fileprivate func pushNotificationsPermissionStatus() async -> Permission.Status {
+        return
+            await notificationCenter
             .currentSettings()
             .authorizationStatus.map
     }
 
-    func requestPushNotificationsPermission() async {
+    fileprivate func requestPushNotificationsPermission() async {
         let center = notificationCenter
-        let isGranted = (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
+        let isGranted =
+            (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
         appState[\.permissions.push] = isGranted ? .granted : .denied
     }
 }
@@ -126,4 +129,3 @@ final class StubUserPermissionsInteractor: UserPermissionsInteractor {
     func request(permission: Permission) {
     }
 }
-

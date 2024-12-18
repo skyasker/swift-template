@@ -6,10 +6,10 @@
 //  Copyright © 2019 Alexey Naumov. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 
-enum ApiModel { }
+enum ApiModel {}
 
 protocol WebRepository {
     var session: URLSession { get }
@@ -84,5 +84,5 @@ typealias HTTPCode = Int
 typealias HTTPCodes = Range<HTTPCode>
 
 extension HTTPCodes {
-    static let success = 200 ..< 300
+    static let success = 200..<300
 }

@@ -6,8 +6,8 @@
 //  Copyright © 2019 Alexey Naumov. All rights reserved.
 //
 
-import UIKit
 import Combine
+import UIKit
 
 @MainActor
 protocol SystemEventsHandler {
@@ -16,7 +16,8 @@ protocol SystemEventsHandler {
     func sceneWillResignActive()
     func handlePushRegistration(result: Result<Data, Error>)
     @MainActor
-    func appDidReceiveRemoteNotification(payload: [AnyHashable: Any]) async -> UIBackgroundFetchResult
+    func appDidReceiveRemoteNotification(payload: [AnyHashable: Any]) async
+        -> UIBackgroundFetchResult
 }
 
 struct RealSystemEventsHandler: SystemEventsHandler {
@@ -27,10 +28,12 @@ struct RealSystemEventsHandler: SystemEventsHandler {
     let pushTokenWebRepository: PushTokenWebRepository
     private let cancelBag = CancelBag()
 
-    init(container: DIContainer,
-         deepLinksHandler: DeepLinksHandler,
-         pushNotificationsHandler: PushNotificationsHandler,
-         pushTokenWebRepository: PushTokenWebRepository) {
+    init(
+        container: DIContainer,
+        deepLinksHandler: DeepLinksHandler,
+        pushNotificationsHandler: PushNotificationsHandler,
+        pushTokenWebRepository: PushTokenWebRepository
+    ) {
 
         self.container = container
         self.deepLinksHandler = deepLinksHandler
@@ -88,15 +91,17 @@ struct RealSystemEventsHandler: SystemEventsHandler {
 
     }
 
-    func appDidReceiveRemoteNotification(payload: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+    func appDidReceiveRemoteNotification(payload: [AnyHashable: Any]) async
+        -> UIBackgroundFetchResult
+    {
         return .noData
     }
 }
 
 // MARK: - Notifications
 
-private extension NotificationCenter {
-    var keyboardHeightPublisher: AnyPublisher<CGFloat, Never> {
+extension NotificationCenter {
+    fileprivate var keyboardHeightPublisher: AnyPublisher<CGFloat, Never> {
         let willShow = publisher(for: UIApplication.keyboardWillShowNotification)
             .map { $0.keyboardHeight }
         let willHide = publisher(for: UIApplication.keyboardWillHideNotification)
@@ -106,8 +111,8 @@ private extension NotificationCenter {
     }
 }
 
-private extension Notification {
-    var keyboardHeight: CGFloat {
+extension Notification {
+    fileprivate var keyboardHeight: CGFloat {
         return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?
             .cgRectValue.height ?? 0
     }

@@ -28,7 +28,8 @@ struct RealCountriesWebRepository: CountriesWebRepository {
     }
 
     func details(country: DBModel.Country) async throws -> ApiModel.CountryDetails {
-        let response: [ApiModel.CountryDetails] = try await call(endpoint: API.countryDetails(countryName: country.name))
+        let response: [ApiModel.CountryDetails] = try await call(
+            endpoint: API.countryDetails(countryName: country.name))
         guard let details = response.first else {
             throw APIError.unexpectedResponse
         }
@@ -51,7 +52,8 @@ extension RealCountriesWebRepository.API: APICall {
         case .allCountries:
             return "/all"
         case let .countryDetails(countryName):
-            let encodedName = countryName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+            let encodedName = countryName.addingPercentEncoding(
+                withAllowedCharacters: .urlQueryAllowed)
             return "/name/\(encodedName ?? countryName)"
         }
     }

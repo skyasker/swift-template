@@ -17,12 +17,12 @@ struct RealImagesWebRepository: ImagesWebRepository {
 
     let session: URLSession
     let baseURL: String
-    
+
     init(session: URLSession) {
         self.session = session
         self.baseURL = ""
     }
-    
+
     func loadImage(url: URL) async throws -> UIImage {
         let (localURL, _) = try await session.download(from: url)
         let data = try Data(contentsOf: localURL)

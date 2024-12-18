@@ -6,8 +6,8 @@
 //  Copyright © 2019 Alexey Naumov. All rights reserved.
 //
 
-import SwiftUI
 import Combine
+import SwiftUI
 
 struct AppState: Equatable {
     var routing = ViewRouting()
@@ -34,7 +34,9 @@ extension AppState {
         var push: Permission.Status = .unknown
     }
 
-    static func permissionKeyPath(for permission: Permission) -> WritableKeyPath<AppState, Permission.Status> {
+    static func permissionKeyPath(for permission: Permission) -> WritableKeyPath<
+        AppState, Permission.Status
+    > {
         let pathToPermissions = \AppState.permissions
         switch permission {
         case .pushNotifications:

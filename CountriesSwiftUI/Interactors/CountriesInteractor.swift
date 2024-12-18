@@ -8,7 +8,8 @@
 
 protocol CountriesInteractor {
     func refreshCountriesList() async throws
-    func loadCountryDetails(country: DBModel.Country, forceReload: Bool) async throws -> DBModel.CountryDetails
+    func loadCountryDetails(country: DBModel.Country, forceReload: Bool) async throws
+        -> DBModel.CountryDetails
 }
 
 struct RealCountriesInteractor: CountriesInteractor {
@@ -25,7 +26,8 @@ struct RealCountriesInteractor: CountriesInteractor {
         country: DBModel.Country, forceReload: Bool
     ) async throws -> DBModel.CountryDetails {
         if !forceReload,
-           let stored = try? await dbRepository.countryDetails(for: country) {
+            let stored = try? await dbRepository.countryDetails(for: country)
+        {
             return stored
         }
         let details = try await webRepository.details(country: country)
@@ -42,7 +44,9 @@ struct StubCountriesInteractor: CountriesInteractor {
     func refreshCountriesList() async throws {
     }
 
-    func loadCountryDetails(country: DBModel.Country, forceReload: Bool) async throws -> DBModel.CountryDetails {
+    func loadCountryDetails(country: DBModel.Country, forceReload: Bool) async throws
+        -> DBModel.CountryDetails
+    {
         throw ValueIsMissingError()
     }
 }

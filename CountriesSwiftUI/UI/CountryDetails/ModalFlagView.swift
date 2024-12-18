@@ -6,15 +6,15 @@
 //  Copyright © 2019 Alexey Naumov. All rights reserved.
 //
 
-import SwiftUI
 import EnvironmentOverrides
+import SwiftUI
 
 struct ModalFlagView: View {
 
     let country: DBModel.Country
     @Binding var isDisplayed: Bool
     let inspection = Inspection<Self>()
-    
+
     var body: some View {
         NavigationStack {
             country.flag.map { url in
@@ -36,10 +36,11 @@ struct ModalFlagView: View {
         .onReceive(inspection.notice) { self.inspection.visit(self, $0) }
         .attachEnvironmentOverrides()
     }
-    
+
     private var closeButton: some View {
-        Button(action: {
-            self.isDisplayed = false
-        }, label: { Text("Close") })
+        Button(
+            action: {
+                self.isDisplayed = false
+            }, label: { Text("Close") })
     }
 }

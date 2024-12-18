@@ -6,9 +6,9 @@
 //  Copyright © 2024 Alexey Naumov. All rights reserved.
 //
 
-import SwiftUI
-import SwiftData
 import Combine
+import SwiftData
+import SwiftUI
 
 struct CountriesList: View {
 
@@ -34,15 +34,19 @@ struct CountriesList: View {
     var body: some View {
         NavigationStack(path: $navigationPath) {
             content
-                .query(searchText: searchText, results: $countries, { search in
-                    Query(filter: #Predicate<DBModel.Country> { country in
-                        if search.isEmpty {
-                            return true
-                        } else {
-                            return country.name.localizedStandardContains(search)
-                        }
-                    }, sort: \DBModel.Country.name)
-                })
+                .query(
+                    searchText: searchText, results: $countries,
+                    { search in
+                        Query(
+                            filter: #Predicate<DBModel.Country> { country in
+                                if search.isEmpty {
+                                    return true
+                                } else {
+                                    return country.name.localizedStandardContains(search)
+                                }
+                            }, sort: \DBModel.Country.name)
+                    }
+                )
                 .navigationTitle("Countries")
         }
         .modifier(LocaleReader(container: localeContainer))
@@ -74,8 +78,8 @@ struct CountriesList: View {
 
 // MARK: - Loading Content
 
-private extension CountriesList {
-    func defaultView() -> some View {
+extension CountriesList {
+    fileprivate func defaultView() -> some View {
         Text("").onAppear {
             if !countries.isEmpty {
                 countriesState = .loaded(())
@@ -84,24 +88,26 @@ private extension CountriesList {
         }
     }
 
-    func loadingView() -> some View {
+    fileprivate func loadingView() -> some View {
         ProgressView()
             .progressViewStyle(CircularProgressViewStyle())
     }
 
-    func failedView(_ error: Error) -> some View {
-        ErrorView(error: error, retryAction: {
-            loadCountriesList(forceReload: true)
-        })
+    fileprivate func failedView(_ error: Error) -> some View {
+        ErrorView(
+            error: error,
+            retryAction: {
+                loadCountriesList(forceReload: true)
+            })
     }
 }
 
 // MARK: - Displaying Content
 
 @MainActor
-private extension CountriesList {
+extension CountriesList {
     @ViewBuilder
-    func loadedView() -> some View {
+    fileprivate func loadedView() -> some View {
         if countries.isEmpty && !searchText.isEmpty {
             Text("No matches found")
                 .font(.footnote)
@@ -123,23 +129,28 @@ private extension CountriesList {
                 permissionsButton
             }
         }
-        .onChange(of: routingState.countryCode, initial: true, { _, code in
-            guard let code,
-                  let country = countries.first(where: { $0.alpha3Code == code})
-            else { return }
-            navigationPath.append(country)
-        })
-        .onChange(of: navigationPath, { _, path in
-            if !path.isEmpty {
-                routingBinding.wrappedValue.countryCode = nil
+        .onChange(
+            of: routingState.countryCode, initial: true,
+            { _, code in
+                guard let code,
+                    let country = countries.first(where: { $0.alpha3Code == code })
+                else { return }
+                navigationPath.append(country)
             }
-        })
+        )
+        .onChange(
+            of: navigationPath,
+            { _, path in
+                if !path.isEmpty {
+                    routingBinding.wrappedValue.countryCode = nil
+                }
+            })
     }
 }
 
 // MARK: - Side Effects
 
-private extension CountriesList {
+extension CountriesList {
 
     private func loadCountriesList(forceReload: Bool) {
         guard forceReload || countries.isEmpty else { return }
@@ -165,7 +176,7 @@ extension CountriesList {
 
 // MARK: - State Updates
 
-private extension CountriesList {
+extension CountriesList {
 
     private var routingUpdate: AnyPublisher<Routing, Never> {
         injected.appState.updates(for: \.routing.countriesList)

@@ -6,10 +6,10 @@
 //  Copyright © 2019 Alexey Naumov. All rights reserved.
 //
 
-import UIKit
-import SwiftUI
 import Combine
 import Foundation
+import SwiftUI
+import UIKit
 
 @MainActor
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,28 +21,43 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         environment.rootView
     }
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions
-        launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
         return true
     }
 
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        let config: UISceneConfiguration = UISceneConfiguration(name: nil, sessionRole: connectingSceneSession.role)
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        let config: UISceneConfiguration = UISceneConfiguration(
+            name: nil, sessionRole: connectingSceneSession.role)
         config.delegateClass = SceneDelegate.self
         SceneDelegate.register(systemEventsHandler)
         return config
     }
 
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
         systemEventsHandler.handlePushRegistration(result: .success(deviceToken))
     }
 
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    func application(
+        _ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
         systemEventsHandler.handlePushRegistration(result: .failure(error))
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
-        return await systemEventsHandler
+    func application(
+        _ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]
+    ) async -> UIBackgroundFetchResult {
+        return
+            await systemEventsHandler
             .appDidReceiveRemoteNotification(payload: userInfo)
     }
 }

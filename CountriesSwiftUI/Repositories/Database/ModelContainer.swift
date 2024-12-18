@@ -14,7 +14,8 @@ extension ModelContainer {
         inMemoryOnly: Bool = false, isStub: Bool = false
     ) throws -> ModelContainer {
         let schema = Schema.appSchema
-        let modelConfiguration = ModelConfiguration(isStub ? "stub" : nil, schema: schema, isStoredInMemoryOnly: inMemoryOnly)
+        let modelConfiguration = ModelConfiguration(
+            isStub ? "stub" : nil, schema: schema, isStoredInMemoryOnly: inMemoryOnly)
         return try ModelContainer(for: schema, configurations: [modelConfiguration])
     }
 
@@ -28,4 +29,4 @@ extension ModelContainer {
 }
 
 @ModelActor
-final actor MainDBRepository { }
+final actor MainDBRepository {}

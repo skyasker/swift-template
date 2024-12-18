@@ -11,17 +11,17 @@ import SwiftUI
 struct DetailRow: View {
     private let leftLabel: Text
     private let rightLabel: Text
-    
+
     init(leftLabel: Text, rightLabel: Text) {
         self.leftLabel = leftLabel
         self.rightLabel = rightLabel
     }
-    
+
     init(leftLabel: Text, rightLabel: LocalizedStringKey) {
         self.leftLabel = leftLabel
         self.rightLabel = Text(rightLabel)
     }
-    
+
     var body: some View {
         HStack {
             leftLabel

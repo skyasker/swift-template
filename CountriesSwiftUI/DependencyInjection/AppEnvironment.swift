@@ -6,8 +6,8 @@
 //  Copyright © 2024 Alexey Naumov. All rights reserved.
 //
 
-import UIKit
 import SwiftData
+import UIKit
 
 @MainActor
 struct AppEnvironment {
@@ -40,10 +40,12 @@ extension AppEnvironment {
         let webRepositories = configuredWebRepositories(session: session)
         let modelContainer = configuredModelContainer()
         let dbRepositories = configuredDBRepositories(modelContainer: modelContainer)
-        let interactors = configuredInteractors(appState: appState, webRepositories: webRepositories, dbRepositories: dbRepositories)
+        let interactors = configuredInteractors(
+            appState: appState, webRepositories: webRepositories, dbRepositories: dbRepositories)
         let diContainer = DIContainer(appState: appState, interactors: interactors)
         let deepLinksHandler = RealDeepLinksHandler(container: diContainer)
-        let pushNotificationsHandler = RealPushNotificationsHandler(deepLinksHandler: deepLinksHandler)
+        let pushNotificationsHandler = RealPushNotificationsHandler(
+            deepLinksHandler: deepLinksHandler)
         let systemEventsHandler = RealSystemEventsHandler(
             container: diContainer,
             deepLinksHandler: deepLinksHandler,
@@ -67,16 +69,21 @@ extension AppEnvironment {
         return URLSession(configuration: configuration)
     }
 
-    private static func configuredWebRepositories(session: URLSession) -> DIContainer.WebRepositories {
+    private static func configuredWebRepositories(session: URLSession)
+        -> DIContainer.WebRepositories
+    {
         let images = RealImagesWebRepository(session: session)
         let countries = RealCountriesWebRepository(session: session)
         let pushToken = RealPushTokenWebRepository(session: session)
-        return .init(images: images,
-                     countries: countries,
-                     pushToken: pushToken)
+        return .init(
+            images: images,
+            countries: countries,
+            pushToken: pushToken)
     }
 
-    private static func configuredDBRepositories(modelContainer: ModelContainer) -> DIContainer.DBRepositories {
+    private static func configuredDBRepositories(modelContainer: ModelContainer)
+        -> DIContainer.DBRepositories
+    {
         let mainDBRepository = MainDBRepository(modelContainer: modelContainer)
         return .init(countries: mainDBRepository)
     }
@@ -100,13 +107,15 @@ extension AppEnvironment {
             webRepository: webRepositories.countries,
             dbRepository: dbRepositories.countries)
         let userPermissions = RealUserPermissionsInteractor(
-            appState: appState, openAppSettings: {
+            appState: appState,
+            openAppSettings: {
                 URL(string: UIApplication.openSettingsURLString).flatMap {
                     UIApplication.shared.open($0, options: [:], completionHandler: nil)
                 }
             })
-        return .init(images: images,
-                     countries: countries,
-                     userPermissions: userPermissions)
+        return .init(
+            images: images,
+            countries: countries,
+            userPermissions: userPermissions)
     }
 }

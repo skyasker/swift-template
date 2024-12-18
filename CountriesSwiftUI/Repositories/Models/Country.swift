@@ -22,7 +22,10 @@ extension DBModel {
         @Attribute(.unique) var alpha3Code: String
         @Relationship(inverse: \CountryDetails.neighbors) var neighbors: [CountryDetails] = []
 
-        init(name: String, translations: [String: String?], population: Int, flag: URL? = nil, alpha3Code: String) {
+        init(
+            name: String, translations: [String: String?], population: Int, flag: URL? = nil,
+            alpha3Code: String
+        ) {
             self.name = name
             self.translations = translations
             self.population = population
@@ -60,7 +63,10 @@ extension ApiModel {
             case alpha3Code
         }
 
-        init(name: String, translations: [String: String?], population: Int, flag: URL?, alpha3Code: String) {
+        init(
+            name: String, translations: [String: String?], population: Int, flag: URL?,
+            alpha3Code: String
+        ) {
             self.name = name
             self.translations = translations
             self.population = population
@@ -74,10 +80,14 @@ extension ApiModel {
             translations = try values.decode([String: String?].self, forKey: .translations)
             population = try values.decode(Int.self, forKey: .population)
             if let alpha2orFlagURL = try? values.decode(String.self, forKey: .flag) {
-                let urlString = alpha2orFlagURL.count == 2 ?
-                "https://flagcdn.com/w640/\(alpha2orFlagURL.lowercased()).jpg" : alpha2orFlagURL
+                let urlString =
+                    alpha2orFlagURL.count == 2
+                    ? "https://flagcdn.com/w640/\(alpha2orFlagURL.lowercased()).jpg"
+                    : alpha2orFlagURL
                 flag = URL(string: urlString)
-            } else { flag = nil }
+            } else {
+                flag = nil
+            }
             alpha3Code = try values.decode(String.self, forKey: .alpha3Code)
         }
     }

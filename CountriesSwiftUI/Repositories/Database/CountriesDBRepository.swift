@@ -6,8 +6,8 @@
 //  Copyright © 2024 Alexey Naumov. All rights reserved.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 
 protocol CountriesDBRepository {
     @MainActor
@@ -21,9 +21,10 @@ extension MainDBRepository: CountriesDBRepository {
     @MainActor
     func countryDetails(for country: DBModel.Country) async throws -> DBModel.CountryDetails? {
         let alpha3Code = country.alpha3Code
-        let fetchDescriptor = FetchDescriptor(predicate: #Predicate<DBModel.CountryDetails> {
-            $0.alpha3Code == alpha3Code
-        })
+        let fetchDescriptor = FetchDescriptor(
+            predicate: #Predicate<DBModel.CountryDetails> {
+                $0.alpha3Code == alpha3Code
+            })
         return try modelContainer.mainContext.fetch(fetchDescriptor).first
     }
 
@@ -41,9 +42,10 @@ extension MainDBRepository: CountriesDBRepository {
         let alpha3Code = country.alpha3Code
         try modelContext.transaction {
             let currencies = countryDetails.currencies.map { $0.dbModel() }
-            let neighborsFetch = FetchDescriptor(predicate: #Predicate<DBModel.Country> {
-                countryDetails.borders.contains($0.alpha3Code)
-            })
+            let neighborsFetch = FetchDescriptor(
+                predicate: #Predicate<DBModel.Country> {
+                    countryDetails.borders.contains($0.alpha3Code)
+                })
             let neighbors = try modelContext.fetch(neighborsFetch)
             currencies.forEach {
                 modelContext.insert($0)
@@ -58,15 +60,16 @@ extension MainDBRepository: CountriesDBRepository {
     }
 }
 
-internal extension ApiModel.Country {
+extension ApiModel.Country {
     func dbModel() -> DBModel.Country {
-        return .init(name: name, translations: translations,
-                     population: population, flag: flag,
-                     alpha3Code: alpha3Code)
+        return .init(
+            name: name, translations: translations,
+            population: population, flag: flag,
+            alpha3Code: alpha3Code)
     }
 }
 
-internal extension ApiModel.Currency {
+extension ApiModel.Currency {
     func dbModel() -> DBModel.Currency {
         return .init(code: code, symbol: symbol, name: name)
     }
