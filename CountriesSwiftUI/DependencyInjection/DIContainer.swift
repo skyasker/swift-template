@@ -13,6 +13,7 @@ struct DIContainer {
 
     let appState: Store<AppState>
     let interactors: Interactors
+    let modelData = ModelData()
 
     init(appState: Store<AppState> = .init(AppState()), interactors: Interactors) {
         self.appState = appState

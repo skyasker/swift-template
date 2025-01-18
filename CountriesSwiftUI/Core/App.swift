@@ -12,39 +12,14 @@ import SwiftUI
 @main
 struct MainApp: App {
 
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    //    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @State private var modelData = ModelData()
 
     var body: some Scene {
         WindowGroup {
-            appDelegate.rootView
-        }
-    }
-}
-
-extension AppEnvironment {
-    var rootView: some View {
-        VStack {
-            if isRunningTests {
-                Text("Running unit tests")
-            } else {
-                CountriesList()
-                    .modifier(RootViewAppearance())
-                    .modelContainer(modelContainer)
-                    .attachEnvironmentOverrides(onChange: onChangeHandler)
-                    .inject(diContainer)
-                if modelContainer.isStub {
-                    Text("⚠️ There is an issue with local database")
-                        .font(.caption2)
-                }
-            }
-        }
-    }
-
-    private var onChangeHandler: (EnvironmentValues.Diff) -> Void {
-        return { diff in
-            if !diff.isDisjoint(with: [.locale, .sizeCategory]) {
-                self.diContainer.appState[\.routing] = AppState.ViewRouting()
-            }
+            //            appDelegate.rootView
+            ContentView()
+                .environment(modelData)
         }
     }
 }

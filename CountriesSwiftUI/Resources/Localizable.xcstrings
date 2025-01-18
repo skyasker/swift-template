@@ -20,6 +20,9 @@
         }
       }
     },
+    "%@ tab -- Click to jump next view" : {
+
+    },
     "%lld" : {
       "localizations" : {
         "de" : {
@@ -51,6 +54,9 @@
           }
         }
       }
+    },
+    "About %@" : {
+
     },
     "Allow Push" : {
       "localizations" : {
@@ -84,6 +90,9 @@
         }
       }
     },
+    "Badge for %@." : {
+
+    },
     "Basic Info" : {
       "localizations" : {
         "de" : {
@@ -99,6 +108,9 @@
           }
         }
       }
+    },
+    "Cancel" : {
+
     },
     "Cancel loading" : {
       "localizations" : {
@@ -180,6 +192,9 @@
         }
       }
     },
+    "Completed Badges" : {
+
+    },
     "Countries" : {
       "localizations" : {
         "de" : {
@@ -228,6 +243,33 @@
         }
       }
     },
+    "Detail View" : {
+
+    },
+    "Enable Notifications" : {
+
+    },
+    "Favorites only" : {
+
+    },
+    "Goal Date" : {
+
+    },
+    "Goal Date: " : {
+
+    },
+    "Graph" : {
+
+    },
+    "helllo" : {
+
+    },
+    "Hello, World!" : {
+
+    },
+    "NavigatedView" : {
+
+    },
     "Neighboring countries" : {
       "localizations" : {
         "de" : {
@@ -259,6 +301,9 @@
           }
         }
       }
+    },
+    "Notifications: %@" : {
+
     },
     "Population" : {
       "localizations" : {
@@ -292,6 +337,9 @@
         }
       }
     },
+    "Recent Hikes" : {
+
+    },
     "Retry" : {
       "localizations" : {
         "de" : {
@@ -324,6 +372,21 @@
         }
       }
     },
+    "Search Landmarks" : {
+
+    },
+    "Seasonal Photo" : {
+
+    },
+    "Seasonal Photos: %@" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Toggle Favorite" : {
+
+    },
     "Unable to load image" : {
       "localizations" : {
         "de" : {
@@ -339,6 +402,33 @@
           }
         }
       }
+    },
+    "User Profile" : {
+
+    },
+    "Username" : {
+
+    },
+    "会话" : {
+
+    },
+    "删除" : {
+
+    },
+    "复制" : {
+
+    },
+    "探索" : {
+
+    },
+    "编辑" : {
+
+    },
+    "聊天" : {
+
+    },
+    "输入消息" : {
+
     }
   },
   "version" : "1.0"
