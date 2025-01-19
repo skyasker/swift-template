@@ -8,7 +8,8 @@ A view that summarizes a profile.
 import SwiftUI
 
 struct ProfileSummary: View {
-    @Environment(ModelData.self) var modelData
+    // @Environment(ModelData.self) var modelData
+    @Environment(\.injected.modelData) private var modelData: ModelData
     var profile: Profile
 
     var body: some View {

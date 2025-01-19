@@ -15,6 +15,8 @@ protocol SystemEventsHandler {
     func sceneDidBecomeActive()
     func sceneWillResignActive()
     func handlePushRegistration(result: Result<Data, Error>)
+    func appDidFinishLaunching()
+    func appWillTerminate()
     @MainActor
     func appDidReceiveRemoteNotification(payload: [AnyHashable: Any]) async
         -> UIBackgroundFetchResult
@@ -42,6 +44,14 @@ struct RealSystemEventsHandler: SystemEventsHandler {
 
         installKeyboardHeightObserver()
         installPushNotificationsSubscriberOnLaunch()
+    }
+
+    func appDidFinishLaunching() {
+        container.interactors.message.connect()
+    }
+
+    func appWillTerminate() {
+        container.interactors.message.disconnect()
     }
 
     private func installKeyboardHeightObserver() {

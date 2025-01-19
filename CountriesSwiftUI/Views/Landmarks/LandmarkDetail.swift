@@ -8,7 +8,8 @@ A view showing the details for a landmark.
 import SwiftUI
 
 struct LandmarkDetail: View {
-    @Environment(ModelData.self) var modelData
+    // @Environment(ModelData.self) var modelData
+    @Environment(\.injected.modelData) private var modelData: ModelData
     var landmark: Landmark
 
     var landmarkIndex: Int {

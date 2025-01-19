@@ -12,14 +12,11 @@ import SwiftUI
 @main
 struct MainApp: App {
 
-    //    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @State private var modelData = ModelData()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
         WindowGroup {
-            //            appDelegate.rootView
-            ContentView()
-                .environment(modelData)
+            appDelegate.rootView
         }
     }
 }

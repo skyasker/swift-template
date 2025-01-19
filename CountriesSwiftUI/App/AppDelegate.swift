@@ -25,6 +25,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        systemEventsHandler.appDidFinishLaunching()
         return true
     }
 
@@ -60,6 +61,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             await systemEventsHandler
             .appDidReceiveRemoteNotification(payload: userInfo)
     }
+
+    // 关闭app时调用
+    func applicationWillTerminate(_ application: UIApplication) {
+        systemEventsHandler.appWillTerminate()
+    }
+
 }
 
 // MARK: - SceneDelegate

@@ -87,7 +87,7 @@ extension AppEnvironment {
         -> DIContainer.DBRepositories
     {
         let mainDBRepository = MainDBRepository(modelContainer: modelContainer)
-        return .init(countries: mainDBRepository)
+        return .init(countries: mainDBRepository, message: mainDBRepository, channel: mainDBRepository)
     }
 
     private static func configuredModelContainer() -> ModelContainer {
@@ -115,10 +115,15 @@ extension AppEnvironment {
                     UIApplication.shared.open($0, options: [:], completionHandler: nil)
                 }
             })
+        let message = RealMessageInteractor(
+            dbRepository: dbRepositories.message,
+            channelDBRepository: dbRepositories.channel
+        )
         return .init(
             images: images,
             countries: countries,
-            userPermissions: userPermissions)
+            userPermissions: userPermissions,
+            message: message)
     }
 }
 
@@ -128,7 +133,8 @@ extension AppEnvironment {
             if isRunningTests {
                 Text("Running unit tests")
             } else {
-                CountriesList()
+                // CountriesList()
+                LandmarkList()
                     .modifier(RootViewAppearance())
                     .modelContainer(modelContainer)
                     .attachEnvironmentOverrides(onChange: onChangeHandler)

@@ -195,6 +195,9 @@
     "Completed Badges" : {
 
     },
+    "Connect" : {
+
+    },
     "Countries" : {
       "localizations" : {
         "de" : {
@@ -246,6 +249,9 @@
     "Detail View" : {
 
     },
+    "Disconnect" : {
+
+    },
     "Enable Notifications" : {
 
     },
@@ -265,6 +271,12 @@
 
     },
     "Hello, World!" : {
+
+    },
+    "Host" : {
+
+    },
+    "Message" : {
 
     },
     "NavigatedView" : {
@@ -337,6 +349,12 @@
         }
       }
     },
+    "Port" : {
+
+    },
+    "Received: %@" : {
+
+    },
     "Recent Hikes" : {
 
     },
@@ -381,7 +399,16 @@
     "Seasonal Photos: %@" : {
 
     },
+    "Send" : {
+
+    },
     "Settings" : {
+
+    },
+    "Status: %@" : {
+
+    },
+    "TCP Client" : {
 
     },
     "Toggle Favorite" : {

@@ -19,6 +19,8 @@ extension Schema {
                 DBModel.Country.self,
                 DBModel.CountryDetails.self,
                 DBModel.Currency.self,
+                DBModel.Message.self,
+                DBModel.Channel.self
             ], version: actualVersion)
     }
 }

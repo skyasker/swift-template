@@ -33,17 +33,21 @@ extension DIContainer {
     }
     struct DBRepositories {
         let countries: CountriesDBRepository
+        let message: MessageDBRepository
+        let channel: ChannelDBRepository
     }
     struct Interactors {
         let images: ImagesInteractor
         let countries: CountriesInteractor
         let userPermissions: UserPermissionsInteractor
+        let message: MessageInteractor
 
         static var stub: Self {
             .init(
                 images: StubImagesInteractor(),
                 countries: StubCountriesInteractor(),
-                userPermissions: StubUserPermissionsInteractor())
+                userPermissions: StubUserPermissionsInteractor(),
+                message: StubMessageInteractor())
         }
     }
 }

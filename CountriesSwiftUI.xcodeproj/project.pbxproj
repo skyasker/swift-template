@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4819F10E2CDF5819003CA0AE /* EnvironmentOverrides in Frameworks */ = {isa = PBXBuildFile; productRef = 4819F10D2CDF5819003CA0AE /* EnvironmentOverrides */; };
 		4819F1172CDF6DD4003CA0AE /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 4819F1162CDF6DD4003CA0AE /* ViewInspector */; };
+		83BF03602D3CEDD600C611E3 /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 83BF035F2D3CEDD600C611E3 /* SwiftProtobuf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4819F10E2CDF5819003CA0AE /* EnvironmentOverrides in Frameworks */,
+				83BF03602D3CEDD600C611E3 /* SwiftProtobuf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +66,7 @@
 			children = (
 				488734192CDCA2DB00B400A3 /* CountriesSwiftUI */,
 				4887342C2CDCA2DD00B400A3 /* UnitTests */,
+				83BF035E2D3CEDD600C611E3 /* Frameworks */,
 				488734182CDCA2DB00B400A3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -75,6 +78,13 @@
 				488734292CDCA2DD00B400A3 /* UnitTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		83BF035E2D3CEDD600C611E3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -98,6 +108,7 @@
 			name = CountriesSwiftUI;
 			packageProductDependencies = (
 				4819F10D2CDF5819003CA0AE /* EnvironmentOverrides */,
+				83BF035F2D3CEDD600C611E3 /* SwiftProtobuf */,
 			);
 			productName = CountriesSwiftUI;
 			productReference = 488734172CDCA2DB00B400A3 /* CountriesSwiftUI.app */;
@@ -135,7 +146,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = "Alexey Naumov";
 				TargetAttributes = {
 					488734162CDCA2DB00B400A3 = {
@@ -161,6 +172,7 @@
 			packageReferences = (
 				4819F10C2CDF5819003CA0AE /* XCRemoteSwiftPackageReference "EnvironmentOverrides" */,
 				4819F1152CDF6DD4003CA0AE /* XCRemoteSwiftPackageReference "ViewInspector" */,
+				83BF026D2D3BED9900C611E3 /* XCRemoteSwiftPackageReference "swift-protobuf" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 488734182CDCA2DB00B400A3 /* Products */;
@@ -221,6 +233,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -285,6 +298,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -492,6 +506,14 @@
 				minimumVersion = 0.10.0;
 			};
 		};
+		83BF026D2D3BED9900C611E3 /* XCRemoteSwiftPackageReference "swift-protobuf" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-protobuf.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.28.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -504,6 +526,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4819F1152CDF6DD4003CA0AE /* XCRemoteSwiftPackageReference "ViewInspector" */;
 			productName = ViewInspector;
+		};
+		83BF035F2D3CEDD600C611E3 /* SwiftProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83BF026D2D3BED9900C611E3 /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobuf;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

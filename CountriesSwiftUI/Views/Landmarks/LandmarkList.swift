@@ -5,15 +5,20 @@ Abstract:
 A view showing a list of landmarks.
 */
 
+import SwiftData
 import SwiftUI
 
 struct LandmarkList: View {
-    @Environment(ModelData.self) var modelData
+    // @Environment(ModelData.self) var modelData
+    @Environment(\.injected.modelData) private var modelData: ModelData
     @State private var showFavoritesOnly = false
     @State private var filter = FilterCategory.all
     @State private var selectedLandmark: Landmark?
     @State private var showingProfile = false
     @State private var searchText = ""
+    @State private var channels: [DBModel.Channel] = []
+    @State private var selectedChannel: DBModel.Channel?
+    @Environment(\.injected) private var injected: DIContainer
 
     enum FilterCategory: String, CaseIterable, Identifiable {
         case all = "All"
@@ -38,16 +43,16 @@ struct LandmarkList: View {
         return showFavoritesOnly ? "Favorite \(title)" : title
     }
 
-    var index: Int? {
-        modelData.landmarks.firstIndex(where: { $0.id == selectedLandmark?.id })
-    }
+    // var index: Int? {
+    //     modelData.landmarks.firstIndex(where: { $0.id == selectedLandmark?.id })
+    // }
 
     var body: some View {
         @Bindable var modelData = modelData
 
         NavigationStack {
-            List(selection: $selectedLandmark) {
-                ForEach(filteredLandmarks) { landmark in
+            List(selection: $selectedChannel) {
+                ForEach(channels) { landmark in
                     NavigationLink {
 //                        LandmarkDetail(landmark: landmark)
 //                            .toolbar(.hidden, for: .tabBar)
@@ -56,17 +61,18 @@ struct LandmarkList: View {
 
                     } label: {
                         LandmarkRow(landmark: landmark)
+                        // Text(landmark.name)
                     }
                     .tag(landmark)
                 }
-                .onDelete { indexSet in
-                    modelData.landmarks.remove(atOffsets: indexSet)
-                }
-                .onMove { indices, newOffset in
-                    modelData.landmarks.move(fromOffsets: indices, toOffset: newOffset)
-                }
+                // .onDelete { indexSet in
+                //     modelData.landmarks.remove(atOffsets: indexSet)
+                // }
+                // .onMove { indices, newOffset in
+                //     modelData.landmarks.move(fromOffsets: indices, toOffset: newOffset)
+                // }
             }
-            .searchable(text: $searchText, prompt: "Search Landmarks")
+            .searchable(text: $searchText, prompt: "搜索")
             .animation(.default, value: filteredLandmarks)
             .listStyle(PlainListStyle())  // Add this line to make the list edges explicit
             .frame(minWidth: 300)
@@ -77,6 +83,13 @@ struct LandmarkList: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         showingProfile.toggle()
+                        // Task {
+                        //     do {
+                        //         try await injected.interactors.message.mockChannels()
+                        //     } catch {
+                        //         print("Failed to mock channels: \(error)")
+                        //     }
+                        // }
                     } label: {
                         Label("User Profile", systemImage: "person.crop.circle")
                     }
@@ -102,7 +115,6 @@ struct LandmarkList: View {
                     } label: {
                         Label("Favorites only", systemImage: "star.fill")
                     }
-
                 }
 
             }
@@ -111,6 +123,19 @@ struct LandmarkList: View {
                     .environment(modelData)
             }
         }
+        .query(
+            searchText: searchText, results: $channels,
+            { search in
+                Query(
+                    filter: #Predicate<DBModel.Channel> { channel in
+                        if search.isEmpty {
+                            return true
+                        } else {
+                            return channel.name.localizedStandardContains(search)
+                        }
+                    }, sort: \DBModel.Channel.channelID)
+            }
+        )
         //        } detail: {
         //            Text("Select a Landmark")
         //        }
