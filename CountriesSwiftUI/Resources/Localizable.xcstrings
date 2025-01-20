@@ -192,9 +192,6 @@
         }
       }
     },
-    "Completed Badges" : {
-
-    },
     "Countries" : {
       "localizations" : {
         "de" : {
@@ -252,9 +249,6 @@
     "Goal Date" : {
 
     },
-    "Goal Date: " : {
-
-    },
     "Graph" : {
 
     },
@@ -299,7 +293,13 @@
         }
       }
     },
-    "Notifications: %@" : {
+    "Notifications" : {
+
+    },
+    "Off" : {
+
+    },
+    "On" : {
 
     },
     "Population" : {
@@ -333,9 +333,6 @@
           }
         }
       }
-    },
-    "Recent Hikes" : {
-
     },
     "Retry" : {
       "localizations" : {
@@ -372,7 +369,7 @@
     "Seasonal Photo" : {
 
     },
-    "Seasonal Photos: %@" : {
+    "Seasonal Photos" : {
 
     },
     "Settings" : {
@@ -403,9 +400,6 @@
     "Username" : {
 
     },
-    "会话" : {
-
-    },
     "删除" : {
 
     },
@@ -419,6 +413,9 @@
 
     },
     "搜索" : {
+
+    },
+    "时空" : {
 
     },
     "编辑" : {

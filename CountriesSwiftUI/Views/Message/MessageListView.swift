@@ -7,8 +7,8 @@
 //
 
 import SwiftData
-import SwiftUI
 import SwiftProtobuf
+import SwiftUI
 
 // // 定义消息结构
 // struct Message: Identifiable {
@@ -28,7 +28,7 @@ struct MessageListView: View {
     let channel: DBModel.Channel
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             // 消息显示区域
             ScrollViewReader { proxy in
                 ScrollView {
@@ -82,6 +82,7 @@ struct MessageListView: View {
             .onTapGesture {
                 hideKeyboard()
             }
+            .background(Color(UIColor.secondarySystemBackground))
             // 输入框和发送按钮
             // HStack {
             //     TextField("输入消息", text: $messageText)
@@ -96,9 +97,9 @@ struct MessageListView: View {
             // .padding()
             HStack {
                 TextField("输入消息", text: $messageText)
-                    .padding(10)
+                    .padding(8)
                     .background(Color.gray.opacity(0.1))
-                    .cornerRadius(10)
+                    .cornerRadius(8)
                 // TextEditor(text: $messageText)
                 //     .frame(minHeight: 20, maxHeight: 100)  // 限制输入框的高度范围
                 //     .padding(.horizontal)
@@ -110,9 +111,20 @@ struct MessageListView: View {
                         .frame(width: 24, height: 24)
                         .foregroundColor(messageText.isEmpty ? .gray : .blue)
                 }
-                .padding(.trailing)
+                // .padding(.trailing)
             }
-            .padding()
+            // .padding(.top, 0)
+            // .padding(.bottom, 8)
+            .padding(.vertical, 8)
+            .padding(.horizontal)
+            .background(.ultraThinMaterial)
+            // .background(Color(UIColor.secondarySystemBackground))
+            // .overlay(
+            //     Rectangle()
+            //         .frame(height: 1)
+            //         .foregroundColor(.gray.opacity(0.5)),
+            //     alignment: .top
+            // )
         }
         .navigationTitle(channel.name)
         .onChange(of: isEditingMessage) { oldState, newState in
@@ -149,11 +161,12 @@ struct MessageListView: View {
         //     messages.append(userMessage)
         // }
 
-        injected.interactors.message.send(Core_Send.with {
-            $0.channelID = channel.channelID
-            $0.channelType = channel.channelType
-            $0.payload = messageText.data(using: .utf8)!
-        })
+        injected.interactors.message.send(
+            Core_Send.with {
+                $0.channelID = channel.channelID
+                $0.channelType = channel.channelType
+                $0.payload = messageText.data(using: .utf8)!
+            })
 
         // 清空输入框
         messageText = ""
@@ -185,9 +198,10 @@ struct MessageListView: View {
 }
 
 #if canImport(UIKit)
-extension View {
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    extension View {
+        func hideKeyboard() {
+            UIApplication.shared.sendAction(
+                #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
-}
 #endif

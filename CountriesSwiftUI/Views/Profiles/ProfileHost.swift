@@ -10,35 +10,36 @@ import SwiftUI
 struct ProfileHost: View {
     @Environment(\.editMode) var editMode
     // @Environment(ModelData.self) var modelData
-    @Environment(\.injected.modelData) private var modelData: ModelData
+    // @Environment(\.injected.modelData) private var modelData: ModelData
     @State private var draftProfile = Profile.default
+    @State private var profile = Profile.default
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack {
                 if editMode?.wrappedValue == .active {
                     Button("Cancel", role: .cancel) {
-                        draftProfile = modelData.profile
+                        draftProfile = profile
                         editMode?.animation().wrappedValue = .inactive
                     }
                 }
                 Spacer()
                 EditButton()
             }
+            .padding()
 
             if editMode?.wrappedValue == .inactive {
-                ProfileSummary(profile: modelData.profile)
+                ProfileSummary(profile: profile)
             } else {
                 ProfileEditor(profile: $draftProfile)
                     .onAppear {
-                        draftProfile = modelData.profile
+                        draftProfile = profile
                     }
                     .onDisappear {
-                        modelData.profile = draftProfile
+                        profile = draftProfile
                     }
             }
         }
-        .padding()
     }
 }
 

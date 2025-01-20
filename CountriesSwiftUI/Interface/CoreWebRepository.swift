@@ -19,7 +19,8 @@ struct RealCoreWebRepository: CoreWebRepository {
 
     init(session: URLSession) {
         self.session = session
-        self.baseURL = "http://192.168.0.147:8888/rpc"
+        // self.baseURL = "http://192.168.0.147:8888/rpc"
+        self.baseURL = "http://192.168.10.4:8888/rpc"
     }
 
     func allocate() async throws -> Core_Addr {

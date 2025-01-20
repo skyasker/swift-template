@@ -84,7 +84,7 @@ struct LandmarkList: View {
             // .animation(.default, value: filteredLandmarks)
             .listStyle(PlainListStyle())  // Add this line to make the list edges explicit
             .frame(minWidth: 300)
-            .navigationTitle("会话")
+            .navigationTitle("时空")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
