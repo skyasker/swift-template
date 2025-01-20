@@ -12,6 +12,7 @@ import SwiftData
 protocol ChannelDBRepository {
     func store(channel: DBModel.Channel) async throws
     func mock() async throws
+    func delete(_ channel: DBModel.Channel) async throws
 }
 
 extension MainDBRepository: ChannelDBRepository {
@@ -63,32 +64,34 @@ extension MainDBRepository: ChannelDBRepository {
         }
     }
 
-        // var messageID: Int64 = 0
-        // var messageSeq: Int64 = 0
-        // var cmessageID: String = String()
-        // var cmessageSeq: Int64 = 0
-        // var timestamp: Int64 = 0
-        // var channelID: String = String()
-        // var channelType: Int32 = 0
-        // var userID: String = String()
-        // var text: String = String()
-        // var avatar: String = String()
-        // var name: String = String()
-        // var unread: Int32 = 0
+    // var messageID: Int64 = 0
+    // var messageSeq: Int64 = 0
+    // var cmessageID: String = String()
+    // var cmessageSeq: Int64 = 0
+    // var timestamp: Int64 = 0
+    // var channelID: String = String()
+    // var channelType: Int32 = 0
+    // var userID: String = String()
+    // var text: String = String()
+    // var avatar: String = String()
+    // var name: String = String()
+    // var unread: Int32 = 0
 
     func mock() async throws {
-       let avatars =  ["turtlerock",
-            "silversalmoncreek", 
-            "chilkoottrail", 
+        let avatars = [
+            "turtlerock",
+            "silversalmoncreek",
+            "chilkoottrail",
             "stmarylake",
-            "twinlake",  
-            "lakemcdonald",  
-            "charleyrivers", 
+            "twinlake",
+            "lakemcdonald",
+            "charleyrivers",
             "icybay",
             "rainbowlake",
             "hiddenlake",
-            "chincoteague",  
-            "umbagog"]
+            "chincoteague",
+            "umbagog",
+        ]
 
         for i in 0..<100 {
             try modelContext.transaction {
@@ -98,16 +101,22 @@ extension MainDBRepository: ChannelDBRepository {
                     cmessageID: "1",
                     cmessageSeq: 1,
                     timestamp: Int64(Date().timeIntervalSince1970),
-                    channelID: "ch"+String(i),
+                    channelID: "ch" + String(i),
                     channelType: 2,
-                    userID: "user"+String(i),
+                    userID: "user" + String(i),
                     avatar: avatars[i % avatars.count],
-                    name: "用户"+String(i),
+                    name: "用户" + String(i),
                     text: "这是我们的消息内容",
                     unread: 0
                 )
                 modelContext.insert(channel)
             }
+        }
+    }
+
+    func delete(_ channel: DBModel.Channel) async throws {
+        try modelContext.transaction {
+            modelContext.delete(channel)
         }
     }
 }

@@ -10,10 +10,10 @@
 		"swift"
 	],
 	"argv": [
-		"/opt/homebrew/bin/xcode-build-server"
+		"/usr/local/bin/xcode-build-server"
 	],
-	"workspace": "/Users/xsun/x/swift/swift-template/CountriesSwiftUI.xcodeproj/project.xcworkspace",
-	"build_root": "/Users/xsun/Library/Developer/Xcode/DerivedData/CountriesSwiftUI-harsagqeeebqlpcoeywcxcpavahn",
+	"workspace": "/Users/apple/x/swift/clean-architecture-swiftui/CountriesSwiftUI.xcodeproj/project.xcworkspace",
+	"build_root": "/Users/apple/Library/Developer/Xcode/DerivedData/CountriesSwiftUI-hequjjxoiuyiqddwzqejoisrqhck",
 	"scheme": "CountriesSwiftUI",
 	"kind": "xcode"
 }

@@ -16,6 +16,7 @@ import SwiftData
 extension DBModel {
 
     @Model final class Channel {
+        #Index<Channel>([\.channelID], [\.messageID])
 
         var messageID: Int64 = 0
         var messageSeq: Int64 = 0

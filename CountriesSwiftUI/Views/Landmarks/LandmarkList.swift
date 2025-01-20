@@ -10,7 +10,6 @@ import SwiftUI
 
 struct LandmarkList: View {
     // @Environment(ModelData.self) var modelData
-    @Environment(\.injected.modelData) private var modelData: ModelData
     @State private var showFavoritesOnly = false
     @State private var filter = FilterCategory.all
     @State private var selectedLandmark: Landmark?
@@ -29,14 +28,14 @@ struct LandmarkList: View {
         var id: FilterCategory { self }
     }
 
-    var filteredLandmarks: [Landmark] {
-        modelData.landmarks.filter { landmark in
-            (!showFavoritesOnly || landmark.isFavorite)
-                && (filter == .all || filter.rawValue == landmark.category.rawValue)
-                && (searchText.isEmpty || landmark.name.contains(searchText)
-                    || landmark.park.contains(searchText))
-        }
-    }
+    // var filteredLandmarks: [Landmark] {
+    //     modelData.landmarks.filter { landmark in
+    //         (!showFavoritesOnly || landmark.isFavorite)
+    //             && (filter == .all || filter.rawValue == landmark.category.rawValue)
+    //             && (searchText.isEmpty || landmark.name.contains(searchText)
+    //                 || landmark.park.contains(searchText))
+    //     }
+    // }
 
     var title: String {
         let title = filter == .all ? "Landmarks" : filter.rawValue
@@ -48,38 +47,46 @@ struct LandmarkList: View {
     // }
 
     var body: some View {
-        @Bindable var modelData = modelData
+        // @Bindable var modelData = modelData
 
         NavigationStack {
             List(selection: $selectedChannel) {
-                ForEach(channels) { landmark in
+                ForEach(channels) { channel in
                     NavigationLink {
-//                        LandmarkDetail(landmark: landmark)
-//                            .toolbar(.hidden, for: .tabBar)
+                        //                        LandmarkDetail(landmark: landmark)
+                        //                            .toolbar(.hidden, for: .tabBar)
 
-                        MessageListView()
+                        MessageListView(channel: channel)
+                            .toolbar(.hidden, for: .tabBar)
 
                     } label: {
-                        LandmarkRow(landmark: landmark)
+                        LandmarkRow(landmark: channel)
                         // Text(landmark.name)
                     }
-                    .tag(landmark)
+                    .tag(channel)
                 }
-                // .onDelete { indexSet in
-                //     modelData.landmarks.remove(atOffsets: indexSet)
-                // }
+                .onDelete { indexSet in
+                    // modelData.landmarks.remove(atOffsets: indexSet)
+                    Task {
+                        do {
+                            try await injected.interactors.message.deleteChannel(
+                                channels[indexSet.first!])
+                        } catch {
+                            print("Failed to delete channel: \(error)")
+                        }
+                    }
+                }
                 // .onMove { indices, newOffset in
                 //     modelData.landmarks.move(fromOffsets: indices, toOffset: newOffset)
                 // }
             }
             .searchable(text: $searchText, prompt: "搜索")
-            .animation(.default, value: filteredLandmarks)
+            // .animation(.default, value: filteredLandmarks)
             .listStyle(PlainListStyle())  // Add this line to make the list edges explicit
             .frame(minWidth: 300)
             .navigationTitle("会话")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         showingProfile.toggle()
@@ -113,16 +120,16 @@ struct LandmarkList: View {
                     NavigationLink {
                         CategoryHome()
                     } label: {
-                        Label("Favorites only", systemImage: "star.fill")
+                        Label("发现", systemImage: "globe.asia.australia")
                     }
                 }
-
             }
             .sheet(isPresented: $showingProfile) {
                 ProfileHost()
-                    .environment(modelData)
+                    // .environment(modelData)
             }
         }
+
         .query(
             searchText: searchText, results: $channels,
             { search in

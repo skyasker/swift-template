@@ -195,9 +195,6 @@
     "Completed Badges" : {
 
     },
-    "Connect" : {
-
-    },
     "Countries" : {
       "localizations" : {
         "de" : {
@@ -249,13 +246,7 @@
     "Detail View" : {
 
     },
-    "Disconnect" : {
-
-    },
     "Enable Notifications" : {
-
-    },
-    "Favorites only" : {
 
     },
     "Goal Date" : {
@@ -271,12 +262,6 @@
 
     },
     "Hello, World!" : {
-
-    },
-    "Host" : {
-
-    },
-    "Message" : {
 
     },
     "NavigatedView" : {
@@ -349,12 +334,6 @@
         }
       }
     },
-    "Port" : {
-
-    },
-    "Received: %@" : {
-
-    },
     "Recent Hikes" : {
 
     },
@@ -390,25 +369,13 @@
         }
       }
     },
-    "Search Landmarks" : {
-
-    },
     "Seasonal Photo" : {
 
     },
     "Seasonal Photos: %@" : {
 
     },
-    "Send" : {
-
-    },
     "Settings" : {
-
-    },
-    "Status: %@" : {
-
-    },
-    "TCP Client" : {
 
     },
     "Toggle Favorite" : {
@@ -442,16 +409,19 @@
     "删除" : {
 
     },
+    "发现" : {
+
+    },
     "复制" : {
 
     },
     "探索" : {
 
     },
-    "编辑" : {
+    "搜索" : {
 
     },
-    "聊天" : {
+    "编辑" : {
 
     },
     "输入消息" : {

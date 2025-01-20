@@ -39,11 +39,16 @@ import SwiftUI
 
 class TCPClient: ObservableObject {
     private var connection: NWConnection?
+    private var host: String = ""
+    private var port: UInt16 = 0
+    private var reconnectTimer: Timer?
     @Published var receivedMessage: String = ""
     @Published var status: String = "Disconnected"
     var messageReceivedCallback: ((Message) -> Void)?
 
     func connect(to host: String, port: UInt16) {
+        self.host = host
+        self.port = port
         let parameters = NWParameters.tcp
         connection = NWConnection(
             host: NWEndpoint.Host(host), port: NWEndpoint.Port(rawValue: port)!, using: parameters)
@@ -59,7 +64,7 @@ class TCPClient: ObservableObject {
                     framer.userID = "user1"
                     let data = encode(framer)
 
-                    print("Encoded Data: \(data.base64EncodedString())")
+                    // print("Encoded Data: \(data.base64EncodedString())")
 
                     self?.sendData(data)
 
@@ -70,6 +75,7 @@ class TCPClient: ObservableObject {
 
                 case .failed(let error):
                     self?.status = "Failed: \(error.localizedDescription)"
+                    self?.scheduleReconnect()
                 default:
                     break
                 }
@@ -77,6 +83,18 @@ class TCPClient: ObservableObject {
         }
 
         connection?.start(queue: .main)
+    }
+
+    private func scheduleReconnect() {
+        reconnectTimer?.invalidate()
+        reconnectTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { [weak self] _ in
+            self?.reconnect()
+        }
+    }
+
+    private func reconnect() {
+        disconnect()
+        connect(to: host, port: port)
     }
 
     func sendData(_ data: Data) {
@@ -91,13 +109,9 @@ class TCPClient: ObservableObject {
             })
     }
 
-    func sendMessage(_ message: String) {
-        var framer = Core_Send()
-        framer.payload = Data(message.utf8)
-        framer.channelID = "ch1"
-        framer.channelType = 2
-        let data = encode(framer)
 
+    func send(_ message: Message) {
+        let data = encode(message)
         connection?.send(
             content: data,
             completion: .contentProcessed { error in
@@ -117,25 +131,17 @@ class TCPClient: ObservableObject {
             if let data = data {
                 let cp = decode(data)
                 if let cp = cp {
-                    print("Decoded Data: \(cp)")
+                    // print("Decoded Data: \(cp)")
                     DispatchQueue.main.async {
-                        self?.messageReceivedCallback?(cp)
+                        for message in cp {
+                            self?.messageReceivedCallback?(message)
+                        }
                     }
                 }
                 self?.receiveData()  // Continue receiving
             } else if let error = error {
                 print("Receive error: \(error.localizedDescription)")
             }
-
-            // if let data: Data = data, let message = String(data: data, encoding: .utf8) {
-            //     DispatchQueue.main.async {
-            //         self?.receivedMessage = message
-            //         // self?.receivedMessage = String(cp?.remainingLength ?? 0)
-            //     }
-            //     self?.receiveData()  // Continue receiving
-            // } else if let error = error {
-            //     print("Receive error: \(error.localizedDescription)")
-            // }
         }
     }
 
@@ -143,39 +149,5 @@ class TCPClient: ObservableObject {
         connection?.cancel()
         connection = nil
         status = "Disconnected"
-    }
-}
-
-struct TCPView: View {
-    @StateObject private var client = TCPClient()
-    @State private var host: String = "192.168.10.4"
-    @State private var port: String = "5110"
-    @State private var message: String = ""
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("TCP Client").font(.largeTitle)
-            TextField("Host", text: $host).textFieldStyle(RoundedBorderTextFieldStyle())
-            TextField("Port", text: $port).textFieldStyle(RoundedBorderTextFieldStyle())
-            Button("Connect") {
-                if let port = UInt16(port) {
-                    client.connect(to: host, port: port)
-                }
-            }
-            .disabled(client.status == "Connected")
-            Text("Status: \(client.status)")
-            TextField("Message", text: $message).textFieldStyle(RoundedBorderTextFieldStyle())
-            Button("Send") {
-                client.sendMessage(message)
-                message = ""
-            }
-            .disabled(client.status != "Connected")
-            Text("Received: \(client.receivedMessage)")
-            Button("Disconnect") {
-                client.disconnect()
-            }
-            .disabled(client.status != "Connected")
-        }
-        .padding()
     }
 }

@@ -8,6 +8,7 @@
 
 import SwiftData
 import SwiftUI
+import SwiftProtobuf
 
 // // 定义消息结构
 // struct Message: Identifiable {
@@ -23,64 +24,97 @@ struct MessageListView: View {
     @State private var isEditingMessage: Bool = false
     @State private var editingMessageId: UUID?
     @Environment(\.injected) private var injected: DIContainer
+    private let userId = "user1"
+    let channel: DBModel.Channel
 
     var body: some View {
         VStack {
             // 消息显示区域
-            ScrollView {
-                VStack {
-                    ForEach(messages) { message in
-                        HStack {
-                            // if message.isUserMessage {
-                            //     Spacer()
-                            // }
-                            Text(message.channelID)
-                                .padding()
-                                // .background(
-                                //     message.isUserMessage ? Color.blue : Color.gray.opacity(0.2)
-                                // )
-                                // .foregroundColor(message.isUserMessage ? Color.white : Color.black)
-                                .cornerRadius(10)
-                                .contextMenu {
-                                    Button(action: {
-                                        copyMessage(message)
-                                    }) {
-                                        Label("复制", systemImage: "doc.on.doc")
-                                    }
-                                    Button(action: {
-                                        editMessage(message)
-                                    }) {
-                                        Label("编辑", systemImage: "pencil")
-                                    }
-                                    Button(action: {
-                                        deleteMessage(message)
-                                    }) {
-                                        Label("删除", systemImage: "trash")
-                                    }
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack {
+                        ForEach(messages) { message in
+                            HStack {
+                                if message.isFrom(userId: userId) {
+                                    Spacer()
                                 }
-                            // if !message.isUserMessage {
-                            //     Spacer()
-                            // }
+                                Text(message.message())
+                                    .id(message.id)
+                                    .padding()
+                                    .background(
+                                        message.isFrom(userId: userId)
+                                            ? Color.blue : Color.gray.opacity(0.5)
+                                    )
+                                    .foregroundColor(
+                                        message.isFrom(userId: userId) ? Color.white : Color.black
+                                    )
+                                    .cornerRadius(10)
+                                    .contextMenu {
+                                        Button(action: {
+                                            copyMessage(message)
+                                        }) {
+                                            Label("复制", systemImage: "doc.on.doc")
+                                        }
+                                        Button(action: {
+                                            editMessage(message)
+                                        }) {
+                                            Label("编辑", systemImage: "pencil")
+                                        }
+                                        Button(action: {
+                                            deleteMessage(message)
+                                        }) {
+                                            Label("删除", systemImage: "trash")
+                                        }
+                                    }
+                                if !message.isFrom(userId: userId) {
+                                    Spacer()
+                                }
+                            }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
                     }
                 }
+                .onChange(of: messages) { oldMessages, newMessages in
+                    let lastMessageID = newMessages.last?.id
+                    proxy.scrollTo(lastMessageID, anchor: .bottom)
+                }
             }
-
+            .onTapGesture {
+                hideKeyboard()
+            }
             // 输入框和发送按钮
+            // HStack {
+            //     TextField("输入消息", text: $messageText)
+            //         .padding(10)
+            //         .background(Color.gray.opacity(0.1))
+            //         .cornerRadius(8)
+            //         .submitLabel(messageText.isEmpty ? .done : .send)
+            //         .onSubmit {
+            //             sendMessage()
+            //         }
+            // }
+            // .padding()
             HStack {
                 TextField("输入消息", text: $messageText)
                     .padding(10)
                     .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
-                    .submitLabel(messageText.isEmpty ? .done : .send)
-                    .onSubmit {
-                        sendMessage()
-                    }
+                    .cornerRadius(10)
+                // TextEditor(text: $messageText)
+                //     .frame(minHeight: 20, maxHeight: 100)  // 限制输入框的高度范围
+                //     .padding(.horizontal)
+                //     // .background(Color(UIColor.secondarySystemBackground))
+                //     .cornerRadius(10)
+                Button(action: sendMessage) {
+                    Image(systemName: "paperplane.fill")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(messageText.isEmpty ? .gray : .blue)
+                }
+                .padding(.trailing)
             }
             .padding()
         }
-        .navigationTitle("聊天")
+        .navigationTitle(channel.name)
         .onChange(of: isEditingMessage) { oldState, newState in
             // if let editingMessageId = editingMessageId,
             //    let editingMessage = messages.first(where: { $0.id == editingMessageId }) {
@@ -88,9 +122,12 @@ struct MessageListView: View {
             // }
         }
         .query(
-            searchText: "1", results: $messages,
+            searchText: channel.channelID, results: $messages,
             { search in
                 Query(
+                    filter: #Predicate<DBModel.Message> { message in
+                        message.channelID == search || search.isEmpty
+                    },
                     sort: \DBModel.Message.messageID)
             }
         )
@@ -112,7 +149,11 @@ struct MessageListView: View {
         //     messages.append(userMessage)
         // }
 
-        injected.interactors.message.send(messageText)
+        injected.interactors.message.send(Core_Send.with {
+            $0.channelID = channel.channelID
+            $0.channelType = channel.channelType
+            $0.payload = messageText.data(using: .utf8)!
+        })
 
         // 清空输入框
         messageText = ""
@@ -143,6 +184,10 @@ struct MessageListView: View {
     }
 }
 
-#Preview {
-    MessageListView()
+#if canImport(UIKit)
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }
+#endif

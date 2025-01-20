@@ -152,28 +152,33 @@ func encode(_ frame: Message) -> Data {
     return data
 }
 
-func decode(_ data: Data) -> Message? {
-    guard data.count >= 5 else {
-        return nil
+func decode(_ data: Data) -> [Message]? {
+    var messages: [Message] = []
+    var currentData = data
+
+    while currentData.count >= 5 {
+        let messageType = currentData[0]
+        let bodySize = Int(currentData[1]) << 24 | Int(currentData[2]) << 16 | Int(currentData[3]) << 8 | Int(currentData[4])
+        let bodyOffset: Int = 5
+
+        guard currentData.count >= bodyOffset + bodySize else {
+            return nil
+        }
+
+        let body = currentData.subdata(in: bodyOffset..<bodyOffset + Int(bodySize))
+        guard var message = typeOfMessage(messageType) else {
+            return nil
+        }
+
+        do {
+            try message.merge(serializedData: body)
+            messages.append(message)
+        } catch {
+            return nil
+        }
+
+        currentData = currentData.subdata(in: bodyOffset + bodySize..<currentData.count)
     }
 
-    let messageType = data[0]
-    let bodySize = Int(data[1]) << 24 | Int(data[2]) << 16 | Int(data[3]) << 8 | Int(data[4])
-    let bodyOffset:Int = 5
-
-    guard data.count >= bodyOffset + bodySize else {
-        return nil
-    }
-
-    let body = data.subdata(in: bodyOffset..<bodyOffset + Int(bodySize))
-    guard var message = typeOfMessage(messageType) else {
-        return nil
-    }
-
-    do {
-        try message.merge(serializedData: body)
-        return message
-    } catch {
-        return nil
-    }
+    return messages.isEmpty ? nil : messages
 }

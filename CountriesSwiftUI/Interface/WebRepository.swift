@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import SwiftProtobuf
 
 enum ApiModel {}
 
@@ -34,6 +35,26 @@ extension WebRepository {
         }
         do {
             return try decoder.decode(Value.self, from: data)
+        } catch {
+            throw APIError.unexpectedResponse
+        }
+    }
+
+    func rpc<Value>(
+        endpoint: APICall,
+        httpCodes: HTTPCodes = .success
+    ) async throws -> Value
+    where Value: Message {
+        let request = try endpoint.urlRequest(baseURL: baseURL)
+        let (data, response) = try await session.data(for: request)
+        guard let code = (response as? HTTPURLResponse)?.statusCode else {
+            throw APIError.unexpectedResponse
+        }
+        guard httpCodes.contains(code) else {
+            throw APIError.httpCode(code)
+        }
+        do {
+            return try Value(serializedBytes: data)
         } catch {
             throw APIError.unexpectedResponse
         }

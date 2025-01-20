@@ -66,5 +66,13 @@ extension DBModel {
         //     }
         //     return name
         // }
+
+        func isFrom(userId: String) -> Bool {
+            return self.userID == userId
+        }
+
+        func message() -> String {
+            return String(data: payload, encoding: .utf8) ?? ""
+        }
     }
 }

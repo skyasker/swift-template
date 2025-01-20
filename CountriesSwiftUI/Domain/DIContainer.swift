@@ -30,6 +30,7 @@ extension DIContainer {
         let images: ImagesWebRepository
         let countries: CountriesWebRepository
         let pushToken: PushTokenWebRepository
+        let core: CoreWebRepository
     }
     struct DBRepositories {
         let countries: CountriesDBRepository

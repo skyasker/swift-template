@@ -77,10 +77,12 @@ extension AppEnvironment {
         let images = RealImagesWebRepository(session: session)
         let countries = RealCountriesWebRepository(session: session)
         let pushToken = RealPushTokenWebRepository(session: session)
+        let core = RealCoreWebRepository(session: session)
         return .init(
             images: images,
             countries: countries,
-            pushToken: pushToken)
+            pushToken: pushToken,
+            core: core)
     }
 
     private static func configuredDBRepositories(modelContainer: ModelContainer)
@@ -117,7 +119,8 @@ extension AppEnvironment {
             })
         let message = RealMessageInteractor(
             dbRepository: dbRepositories.message,
-            channelDBRepository: dbRepositories.channel
+            channelDBRepository: dbRepositories.channel,
+            webRepository: webRepositories.core
         )
         return .init(
             images: images,
@@ -137,7 +140,7 @@ extension AppEnvironment {
                 LandmarkList()
                     .modifier(RootViewAppearance())
                     .modelContainer(modelContainer)
-                    .attachEnvironmentOverrides(onChange: onChangeHandler)
+                    // .attachEnvironmentOverrides(onChange: onChangeHandler)
                     .inject(diContainer)
                 if modelContainer.isStub {
                     Text("⚠️ There is an issue with local database")
@@ -147,11 +150,11 @@ extension AppEnvironment {
         }
     }
 
-    private var onChangeHandler: (EnvironmentValues.Diff) -> Void {
-        return { diff in
-            if !diff.isDisjoint(with: [.locale, .sizeCategory]) {
-                self.diContainer.appState[\.routing] = AppState.ViewRouting()
-            }
-        }
-    }
+    // private var onChangeHandler: (EnvironmentValues.Diff) -> Void {
+    //     return { diff in
+    //         if !diff.isDisjoint(with: [.locale, .sizeCategory]) {
+    //             self.diContainer.appState[\.routing] = AppState.ViewRouting()
+    //         }
+    //     }
+    // }
 }
