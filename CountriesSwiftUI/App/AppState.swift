@@ -13,6 +13,7 @@ struct AppState: Equatable {
     var routing = ViewRouting()
     var system = System()
     var permissions = Permissions()
+    var user = User()
 }
 
 extension AppState {
@@ -26,6 +27,12 @@ extension AppState {
     struct System: Equatable {
         var isActive: Bool = false
         var keyboardHeight: CGFloat = 0
+    }
+}
+
+extension AppState {
+    struct User {
+        var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
     }
 }
 

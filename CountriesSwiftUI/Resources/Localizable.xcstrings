@@ -23,6 +23,9 @@
     "%@ tab -- Click to jump next view" : {
 
     },
+    "%d" : {
+
+    },
     "%lld" : {
       "localizations" : {
         "de" : {
@@ -258,6 +261,12 @@
     "Hello, World!" : {
 
     },
+    "Invalid Credentials" : {
+
+    },
+    "Login" : {
+
+    },
     "NavigatedView" : {
 
     },
@@ -293,13 +302,19 @@
         }
       }
     },
-    "Notifications" : {
-
-    },
     "Off" : {
 
     },
+    "OK" : {
+
+    },
     "On" : {
+
+    },
+    "Password" : {
+
+    },
+    "Please check your username and password." : {
 
     },
     "Population" : {
@@ -369,10 +384,10 @@
     "Seasonal Photo" : {
 
     },
-    "Seasonal Photos" : {
+    "Settings" : {
 
     },
-    "Settings" : {
+    "This is page %lld of the onboarding." : {
 
     },
     "Toggle Favorite" : {
@@ -400,6 +415,9 @@
     "Username" : {
 
     },
+    "Welcome to App!" : {
+
+    },
     "删除" : {
 
     },
@@ -407,6 +425,9 @@
 
     },
     "复制" : {
+
+    },
+    "开始" : {
 
     },
     "探索" : {
@@ -418,10 +439,22 @@
     "时空" : {
 
     },
+    "注册时间" : {
+
+    },
+    "状态" : {
+
+    },
+    "登出" : {
+
+    },
     "编辑" : {
 
     },
     "输入消息" : {
+
+    },
+    "通知" : {
 
     }
   },

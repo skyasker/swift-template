@@ -59,6 +59,7 @@ extension MainDBRepository: MessageDBRepository {
     func store(message: DBModel.Message) async throws {
         try modelContext.transaction {
             modelContext.insert(message)
+            print("Message stored: \(message.channelID) - \(message.messageID)")
         }
     }
 }

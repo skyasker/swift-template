@@ -9,7 +9,7 @@
 import Foundation
 
 protocol CoreWebRepository: WebRepository {
-    func allocate() async throws -> Core_Addr
+    func allocate(userId:String) async throws -> Core_Addr
 }
 
 struct RealCoreWebRepository: CoreWebRepository {
@@ -19,12 +19,12 @@ struct RealCoreWebRepository: CoreWebRepository {
 
     init(session: URLSession) {
         self.session = session
-        // self.baseURL = "http://192.168.0.147:8888/rpc"
-        self.baseURL = "http://192.168.10.4:8888/rpc"
+        self.baseURL = "http://192.168.0.147:8888/rpc"
+        // self.baseURL = "http://192.168.10.4:8888/rpc"
     }
 
-    func allocate() async throws -> Core_Addr {
-        return try await rpc(endpoint: API.allocate)
+    func allocate(userId:String) async throws -> Core_Addr {
+        return try await rpc(endpoint: API.allocate(userId: userId))
     }
 
     // func details(country: DBModel.Country) async throws -> ApiModel.CountryDetails {
@@ -41,7 +41,7 @@ struct RealCoreWebRepository: CoreWebRepository {
 
 extension RealCoreWebRepository {
     enum API {
-        case allocate
+        case allocate(userId: String)
         case countryDetails(countryName: String)
     }
 }
@@ -73,9 +73,9 @@ extension RealCoreWebRepository.API: APICall {
     }
     func body() throws -> Data? {
         switch self {
-        case .allocate:
+        case .allocate(let userId):
             var message = Core_AllocateArgs()
-            message.userID = "user1"
+            message.userID = userId
             return try message.serializedData()
         case .countryDetails:
             return nil

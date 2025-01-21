@@ -5,6 +5,7 @@ Abstract:
 A view showing featured landmarks above a list of all of the landmarks.
 */
 
+import Combine
 import SwiftUI
 
 struct ContentView: View {
@@ -39,11 +40,30 @@ struct ContentView: View {
     //            }
     //        }
     //    }
+    // @State private var isLoggedIn = false
+    @State private var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
+    @State private var isPreviewed: Bool = UserDefaults.standard.bool(forKey: "isPreviewed")
+    @Environment(\.injected) private var injected: DIContainer
 
     var body: some View {
+        NavigationView {
+            Group {
+                if !isLoggedIn {
+                    if isPreviewed {
+                        LoginView()
+                    } else {
+                        OnboardingView()
+                    }
+                } else {
+                    LandmarkList()
+                }
+            }
+            .transition(.slide)
+        }
+        .onReceive(stateUpdate) { self.isLoggedIn = $0 }
 
         //            TabView {
-        LandmarkList()
+        // LandmarkList()
         // .tabItem {
         //     Label("List", systemImage: "list.bullet")
         // }
@@ -121,9 +141,13 @@ struct ContentView: View {
         //            }
         //        }
     }
+
+    private var stateUpdate: AnyPublisher<Bool, Never> {
+        injected.appState.updates(for: \.user.isLoggedIn)
+    }
 }
 
 #Preview {
     ContentView()
-        .environment(ModelData())
+    // .environment(ModelData())
 }

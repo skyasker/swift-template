@@ -137,7 +137,9 @@ extension AppEnvironment {
                 Text("Running unit tests")
             } else {
                 // CountriesList()
-                LandmarkList()
+                // LandmarkList()
+                // OnboardingView()
+                ContentView()
                     .modifier(RootViewAppearance())
                     .modelContainer(modelContainer)
                     // .attachEnvironmentOverrides(onChange: onChangeHandler)

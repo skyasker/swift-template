@@ -16,6 +16,7 @@ struct LandmarkList: View {
     @State private var showingProfile = false
     @State private var searchText = ""
     @State private var channels: [DBModel.Channel] = []
+    // @Query<DBModel.Channel> private var channels: [DBModel.Channel]
     @State private var selectedChannel: DBModel.Channel?
     @Environment(\.injected) private var injected: DIContainer
 
@@ -80,6 +81,7 @@ struct LandmarkList: View {
                 //     modelData.landmarks.move(fromOffsets: indices, toOffset: newOffset)
                 // }
             }
+
             .searchable(text: $searchText, prompt: "搜索")
             // .animation(.default, value: filteredLandmarks)
             .listStyle(PlainListStyle())  // Add this line to make the list edges explicit
@@ -98,7 +100,11 @@ struct LandmarkList: View {
                         //     }
                         // }
                     } label: {
-                        Label("User Profile", systemImage: "person.crop.circle")
+                        // Label("User Profile", systemImage: "person.crop.circle")
+                        Image("twinlake")
+                            .resizable()
+                            .frame(width: 28, height: 28)
+                            .clipShape(Circle())
                     }
 
                     //                                          Menu {
@@ -129,7 +135,15 @@ struct LandmarkList: View {
                     // .environment(modelData)
             }
         }
-
+        // .onChange(of: searchText) {
+        //     filteredChannels = channels.filter { channel in
+        //         if searchText.isEmpty {
+        //             return true
+        //         } else {
+        //             return channel.name.localizedStandardContains(searchText)
+        //         }
+        //     }
+        // }
         .query(
             searchText: searchText, results: $channels,
             { search in

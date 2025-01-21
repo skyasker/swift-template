@@ -13,6 +13,8 @@ protocol ChannelDBRepository {
     func store(channel: DBModel.Channel) async throws
     func mock() async throws
     func delete(_ channel: DBModel.Channel) async throws
+    @MainActor
+    func upsertByMessage(message: DBModel.Message) async throws
 }
 
 extension MainDBRepository: ChannelDBRepository {
@@ -62,6 +64,50 @@ extension MainDBRepository: ChannelDBRepository {
         try modelContext.transaction {
             modelContext.insert(channel)
         }
+    }
+
+    @MainActor
+    func upsertByMessage(message: DBModel.Message) async throws {
+        let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
+        let channelId = message.channelID
+        // try modelContext.transaction {
+        let fetchDescriptor = FetchDescriptor<DBModel.Channel>(
+            predicate: #Predicate<DBModel.Channel> {
+                $0.channelID == channelId
+            })
+        if let existingChannel = try modelContainer.mainContext.fetch(fetchDescriptor).first {
+            existingChannel.messageID = message.messageID
+            existingChannel.messageSeq = message.messageSeq
+            existingChannel.cmessageID = message.cmessageID
+            existingChannel.cmessageSeq = message.cmessageSeq
+            existingChannel.timestamp = message.timestamp
+            existingChannel.text = message.message()
+            existingChannel.unread = message.isFrom(userId: userId) ? 0 : existingChannel.unread + 1
+        } else {
+            let avatars = [
+                "turtlerock", "silversalmoncreek", "chilkoottrail", "stmarylake",
+                "twinlake", "lakemcdonald", "charleyrivers", "icybay",
+                "rainbowlake", "hiddenlake", "chincoteague", "umbagog",
+            ]
+            let channel = DBModel.Channel(
+                messageID: message.messageID,
+                messageSeq: message.messageSeq,
+                cmessageID: message.cmessageID,
+                cmessageSeq: message.cmessageSeq,
+                timestamp: message.timestamp,
+                channelID: message.channelID,
+                channelType: message.channelType,
+                userID: message.userID,
+                avatar: avatars.randomElement() ?? "defaultAvatar",
+                name: "用户" + message.userID,
+                text: message.message(),
+                unread: message.isFrom(userId: userId) ? 0 : 1
+            )
+            modelContainer.mainContext.insert(channel)
+        }
+        // }
+        try modelContainer.mainContext.save()
+        print("Channel updated: \(message.channelID) - \(message.messageID)")
     }
 
     // var messageID: Int64 = 0

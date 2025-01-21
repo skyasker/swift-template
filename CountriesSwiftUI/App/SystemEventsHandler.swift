@@ -47,7 +47,11 @@ struct RealSystemEventsHandler: SystemEventsHandler {
     }
 
     func appDidFinishLaunching() {
-        container.interactors.message.connect()
+        if container.appState[\.user.isLoggedIn] {
+           if let userId = UserDefaults.standard.string(forKey: "userId") {
+            container.interactors.message.connect(userId: userId)
+           }
+        }
     }
 
     func appWillTerminate() {

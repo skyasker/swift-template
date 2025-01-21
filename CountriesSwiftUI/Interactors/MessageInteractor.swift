@@ -9,7 +9,7 @@
 import SwiftProtobuf
 
 protocol MessageInteractor {
-    func connect()
+    func connect(userId: String)
     func send(_ message: Message)
     func disconnect()
     func mockChannels() async throws
@@ -22,17 +22,17 @@ struct RealMessageInteractor: MessageInteractor {
     let channelDBRepository: ChannelDBRepository
     let webRepository: CoreWebRepository
 
-    func connect() {
+    func connect(userId: String) {
         Task {
             do {
-                let addr = try await webRepository.allocate()
+                let addr = try await webRepository.allocate(userId: userId)
                 print("Allocated address: \(addr)")
                 let components = addr.addr.split(separator: ":")
                 if components.count == 2 {
                     let host = String(components[0])
                     let port = String(components[1])
                     print("Host: \(host), Port: \(port)")
-                    client.connect(to: host, port: UInt16(port)!)
+                    client.connect(to: host, port: UInt16(port)!, userId: userId)
                 } else {
                     print("Invalid address format")
                 }
@@ -41,26 +41,26 @@ struct RealMessageInteractor: MessageInteractor {
             }
         }
 
-
         client.messageReceivedCallback = { message in
             Task {
                 switch message {
-                case let coreSend as Core_Recv:
-                    print("Received message: \(coreSend)")
+                case let m as Core_Recv:
+                    print("Received message: \(String(data: m.payload, encoding: .utf8) ?? "")")
+                    let m = DBModel.Message(
+                        messageID: m.messageID,
+                        messageSeq: m.messageSeq,
+                        cmessageID: m.cmessageID,
+                        cmessageSeq: m.cmessageSeq,
+                        timestamp: m.timestamp,
+                        channelID: m.channelID,
+                        channelType: m.channelType,
+                        topic: m.topic,
+                        userID: m.userID,
+                        payload: m.payload
+                    )
                     do {
-                        try await dbRepository.store(
-                            message: DBModel.Message(
-                                messageID: coreSend.messageID,
-                                messageSeq: coreSend.messageSeq,
-                                cmessageID: coreSend.cmessageID,
-                                cmessageSeq: coreSend.cmessageSeq,
-                                timestamp: coreSend.timestamp,
-                                channelID: coreSend.channelID,
-                                channelType: coreSend.channelType,
-                                topic: coreSend.topic,
-                                userID: coreSend.userID,
-                                payload: coreSend.payload
-                            ))
+                        try await dbRepository.store(message: m)
+                        try await channelDBRepository.upsertByMessage(message: m)
                     } catch {
                         // Handle error
                         print(error)
@@ -91,7 +91,7 @@ struct RealMessageInteractor: MessageInteractor {
 }
 
 struct StubMessageInteractor: MessageInteractor {
-    func connect() {
+    func connect(userId: String) {
     }
 
     func send(_ message: Message) {

@@ -41,14 +41,20 @@ class TCPClient: ObservableObject {
     private var connection: NWConnection?
     private var host: String = ""
     private var port: UInt16 = 0
+    private var userId: String = ""
     private var reconnectTimer: Timer?
     @Published var receivedMessage: String = ""
     @Published var status: String = "Disconnected"
     var messageReceivedCallback: ((Message) -> Void)?
 
-    func connect(to host: String, port: UInt16) {
+    func connect(to host: String, port: UInt16, userId: String) {
+        if connection != nil {
+            disconnect()
+        }
+
         self.host = host
         self.port = port
+        self.userId = userId
         let parameters = NWParameters.tcp
         connection = NWConnection(
             host: NWEndpoint.Host(host), port: NWEndpoint.Port(rawValue: port)!, using: parameters)
@@ -61,7 +67,7 @@ class TCPClient: ObservableObject {
                     self?.receiveData()
 
                     var framer = Core_Conn()
-                    framer.userID = "user1"
+                    framer.userID = userId
                     let data = encode(framer)
 
                     // print("Encoded Data: \(data.base64EncodedString())")
@@ -94,7 +100,7 @@ class TCPClient: ObservableObject {
 
     private func reconnect() {
         disconnect()
-        connect(to: host, port: port)
+        connect(to: host, port: port, userId: userId)
     }
 
     func sendData(_ data: Data) {

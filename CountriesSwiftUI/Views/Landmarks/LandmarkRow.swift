@@ -33,6 +33,18 @@ struct LandmarkRow: View {
 
             Spacer()
 
+            // 在这里显示未读数
+            if landmark.unread > 0 {
+                Text("\(landmark.unread)")
+                    .font(.caption)
+                    .padding(5)
+                    .background(Color.red)
+                    // .clipShape(Circle())
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: true, vertical: false)
+            }
+
             // if landmark.isFavorite {
             //     Image(systemName: "star.fill")
             //         .foregroundStyle(.yellow)
