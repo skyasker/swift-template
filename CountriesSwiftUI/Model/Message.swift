@@ -15,6 +15,7 @@ import SwiftData
 extension DBModel {
 
     @Model final class Message {
+        #Index<Message>([\.channelID], [\.messageID])
 
         var expire: Int64 = 0
         var messageID: Int64 = 0
@@ -27,13 +28,6 @@ extension DBModel {
         var topic: String = String()
         var userID: String = String()
         var payload: Data = Data()
-
-        // var name: String
-        // var translations: [String: String?]
-        // var population: Int
-        // var flag: URL?
-        // @Attribute(.unique) var alpha3Code: String
-        // @Relationship(inverse: \CountryDetails.neighbors) var neighbors: [CountryDetails] = []
 
         init(
             messageID: Int64,
@@ -58,14 +52,6 @@ extension DBModel {
             self.userID = userID
             self.payload = payload
         }
-
-        // func name(locale: Locale) -> String {
-        //     let localeId = locale.shortIdentifier
-        //     if let value = translations[localeId], let localizedName = value {
-        //         return localizedName
-        //     }
-        //     return name
-        // }
 
         func isFrom(userId: String) -> Bool {
             return self.userID == userId
