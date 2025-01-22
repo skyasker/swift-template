@@ -6,6 +6,7 @@
 //  Copyright © 2025 Alexey Naumov. All rights reserved.
 //
 
+import Foundation
 import SwiftProtobuf
 
 protocol MessageInteractor {
@@ -14,6 +15,7 @@ protocol MessageInteractor {
     func disconnect()
     func mockChannels() async throws
     func deleteChannel(_ channel: DBModel.Channel) async throws
+    func loadMessages(for channel: DBModel.Channel) async throws -> [DBModel.Message]
 }
 
 struct RealMessageInteractor: MessageInteractor {
@@ -21,6 +23,7 @@ struct RealMessageInteractor: MessageInteractor {
     let dbRepository: MessageDBRepository
     let channelDBRepository: ChannelDBRepository
     let webRepository: CoreWebRepository
+    let service: Service
 
     func connect(userId: String) {
         Task {
@@ -58,13 +61,23 @@ struct RealMessageInteractor: MessageInteractor {
                         userID: m.userID,
                         payload: m.payload
                     )
-                    do {
-                        try await dbRepository.store(message: m)
-                        try await channelDBRepository.upsertByMessage(message: m)
-                    } catch {
-                        // Handle error
-                        print(error)
-                    }
+                    // do {
+                        service.channels[0].unread += 1
+                        service.channels[0].messages.append(DomainModel.Message(
+                            // 最后一条消息的id+1
+                            id: String(m.messageID),
+                            content: String(data: m.payload, encoding: .utf8) ?? "",
+                            user: service.users[0],
+                            date: Date(),
+                            readed: false,
+                            readers: service.users,
+                            channelid: m.channelID))
+                        // try await dbRepository.store(message: m)
+                        // try await channelDBRepository.upsertByMessage(message: m)
+                    // } catch {
+                    //     // Handle error
+                    //     print(error)
+                    // }
                 default:
                     print("Unknown message type \(message)")
                     break
@@ -88,6 +101,10 @@ struct RealMessageInteractor: MessageInteractor {
     func deleteChannel(_ channel: DBModel.Channel) async throws {
         try! await channelDBRepository.delete(channel)
     }
+
+    func loadMessages(for channel: DBModel.Channel) async throws -> [DBModel.Message] {
+        return try await dbRepository.loadMessages(for: channel.channelID)
+    }
 }
 
 struct StubMessageInteractor: MessageInteractor {
@@ -104,5 +121,9 @@ struct StubMessageInteractor: MessageInteractor {
     }
 
     func deleteChannel(_ channel: DBModel.Channel) async throws {
+    }
+
+    func loadMessages(for channel: DBModel.Channel) async throws -> [DBModel.Message] {
+        return []
     }
 }

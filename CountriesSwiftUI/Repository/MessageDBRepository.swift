@@ -11,6 +11,7 @@ import SwiftData
 
 protocol MessageDBRepository {
     func store(message: DBModel.Message) async throws
+    func loadMessages(for channelId: String) async throws -> [DBModel.Message]
 }
 
 extension MainDBRepository: MessageDBRepository {
@@ -61,5 +62,14 @@ extension MainDBRepository: MessageDBRepository {
             modelContext.insert(message)
             print("Message stored: \(message.channelID) - \(message.messageID)")
         }
+    }
+
+    func loadMessages(for channelId: String) async throws -> [DBModel.Message] {
+        let fetchDescriptor = FetchDescriptor(
+            predicate: #Predicate<DBModel.Message> {
+                $0.channelID == channelId
+            },
+            sortBy: [SortDescriptor(\DBModel.Message.messageID)])
+        return try modelContext.fetch(fetchDescriptor)
     }
 }

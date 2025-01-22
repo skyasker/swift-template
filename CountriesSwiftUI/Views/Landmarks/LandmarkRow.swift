@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LandmarkRow: View {
     // var landmark: Landmark
-    var landmark: DBModel.Channel
+    var landmark: DomainModel.Channel
 
     var body: some View {
         HStack {
@@ -25,7 +25,7 @@ struct LandmarkRow: View {
                 Spacer().frame(height: 10)
 
                 #if !os(watchOS)
-                    Text(landmark.text)
+                    Text(landmark.message.content)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 #endif

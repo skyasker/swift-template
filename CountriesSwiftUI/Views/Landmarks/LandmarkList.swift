@@ -15,7 +15,7 @@ struct LandmarkList: View {
     @State private var selectedLandmark: Landmark?
     @State private var showingProfile = false
     @State private var searchText = ""
-    @State private var channels: [DBModel.Channel] = []
+    // @State private var channels: [DBModel.Channel] = []
     // @Query<DBModel.Channel> private var channels: [DBModel.Channel]
     @State private var selectedChannel: DBModel.Channel?
     @Environment(\.injected) private var injected: DIContainer
@@ -52,7 +52,7 @@ struct LandmarkList: View {
 
         NavigationStack {
             List(selection: $selectedChannel) {
-                ForEach(channels) { channel in
+                ForEach(injected.service.channels) { channel in
                     NavigationLink {
                         //                        LandmarkDetail(landmark: landmark)
                         //                            .toolbar(.hidden, for: .tabBar)
@@ -64,19 +64,19 @@ struct LandmarkList: View {
                         LandmarkRow(landmark: channel)
                         // Text(landmark.name)
                     }
-                    .tag(channel)
+                    // .tag(channel)
                 }
-                .onDelete { indexSet in
-                    // modelData.landmarks.remove(atOffsets: indexSet)
-                    Task {
-                        do {
-                            try await injected.interactors.message.deleteChannel(
-                                channels[indexSet.first!])
-                        } catch {
-                            print("Failed to delete channel: \(error)")
-                        }
-                    }
-                }
+                // .onDelete { indexSet in
+                //     // modelData.landmarks.remove(atOffsets: indexSet)
+                //     Task {
+                //         do {
+                //             try await injected.interactors.message.deleteChannel(
+                //                 channels[indexSet.first!])
+                //         } catch {
+                //             print("Failed to delete channel: \(error)")
+                //         }
+                //     }
+                // }
                 // .onMove { indices, newOffset in
                 //     modelData.landmarks.move(fromOffsets: indices, toOffset: newOffset)
                 // }
@@ -144,19 +144,19 @@ struct LandmarkList: View {
         //         }
         //     }
         // }
-        .query(
-            searchText: searchText, results: $channels,
-            { search in
-                Query(
-                    filter: #Predicate<DBModel.Channel> { channel in
-                        if search.isEmpty {
-                            return true
-                        } else {
-                            return channel.name.localizedStandardContains(search)
-                        }
-                    }, sort: \DBModel.Channel.channelID)
-            }
-        )
+        // .query(
+        //     searchText: searchText, results: $channels,
+        //     { search in
+        //         Query(
+        //             filter: #Predicate<DBModel.Channel> { channel in
+        //                 if search.isEmpty {
+        //                     return true
+        //                 } else {
+        //                     return channel.name.localizedStandardContains(search)
+        //                 }
+        //             }, sort: \DBModel.Channel.channelID)
+        //     }
+        // )
         //        } detail: {
         //            Text("Select a Landmark")
         //        }

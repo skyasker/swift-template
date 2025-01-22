@@ -38,13 +38,16 @@ extension AppEnvironment {
                 deepLinksHandler.open(deepLink: .showCountryFlag(alpha3Code: "AFG"))
             }
         */
+        let service = Service()
         let session = configuredURLSession()
         let webRepositories = configuredWebRepositories(session: session)
         let modelContainer = configuredModelContainer()
         let dbRepositories = configuredDBRepositories(modelContainer: modelContainer)
         let interactors = configuredInteractors(
-            appState: appState, webRepositories: webRepositories, dbRepositories: dbRepositories)
-        let diContainer = DIContainer(appState: appState, interactors: interactors)
+            appState: appState, webRepositories: webRepositories, dbRepositories: dbRepositories,
+            service: service)
+        let diContainer = DIContainer(
+            appState: appState, service: service, interactors: interactors)
         let deepLinksHandler = RealDeepLinksHandler(container: diContainer)
         let pushNotificationsHandler = RealPushNotificationsHandler(
             deepLinksHandler: deepLinksHandler)
@@ -89,7 +92,8 @@ extension AppEnvironment {
         -> DIContainer.DBRepositories
     {
         let mainDBRepository = MainDBRepository(modelContainer: modelContainer)
-        return .init(countries: mainDBRepository, message: mainDBRepository, channel: mainDBRepository)
+        return .init(
+            countries: mainDBRepository, message: mainDBRepository, channel: mainDBRepository)
     }
 
     private static func configuredModelContainer() -> ModelContainer {
@@ -104,7 +108,8 @@ extension AppEnvironment {
     private static func configuredInteractors(
         appState: Store<AppState>,
         webRepositories: DIContainer.WebRepositories,
-        dbRepositories: DIContainer.DBRepositories
+        dbRepositories: DIContainer.DBRepositories,
+        service: Service
     ) -> DIContainer.Interactors {
         let images = RealImagesInteractor(webRepository: webRepositories.images)
         let countries = RealCountriesInteractor(
@@ -120,7 +125,8 @@ extension AppEnvironment {
         let message = RealMessageInteractor(
             dbRepository: dbRepositories.message,
             channelDBRepository: dbRepositories.channel,
-            webRepository: webRepositories.core
+            webRepository: webRepositories.core,
+            service: service
         )
         return .init(
             images: images,
